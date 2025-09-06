@@ -397,7 +397,7 @@ local function get_subject_terminal(callback)
 
   vim.ui.select(items, {
     prompt = "Terminals to Name",
-    format_item = function(term) return term.id .. ": " .. term:_display_name() end,
+    format_item = function(term) return term:_display_name() .. ":" .. term.id end,
   }, function(term)
     if not term then return end
     callback(term)
@@ -419,7 +419,7 @@ local function select_terminal(opts)
   if #terminals == 0 then return utils.notify("No toggleterms are open yet", "info") end
   vim.ui.select(terminals, {
     prompt = "Terminals to Focus",
-    format_item = function(term) return term.id .. ": " .. term:_display_name() end,
+    format_item = function(term) return term:_display_name() .. ":" .. term.id end,
   }, function(_, idx)
     local term = terminals[idx]
     if not term then return end
