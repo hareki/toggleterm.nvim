@@ -393,7 +393,7 @@ end
 ---@param callback fun(t: Terminal?)
 local function get_subject_terminal(callback)
   local items = terms.get_all(true)
-  if #items == 0 then return utils.notify("No toggleterms are open yet") end
+  if #items == 0 then return utils.notify("No toggleterms are open yet", "info") end
 
   vim.ui.select(items, {
     prompt = "Terminals to Name",
