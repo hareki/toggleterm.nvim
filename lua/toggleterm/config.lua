@@ -30,7 +30,7 @@ local function shade(color, factor) return colors.shade_color(color, factor) end
 --- @field persist_mode boolean
 --- @field close_on_exit boolean
 --- @field clear_env boolean
---- @field direction  '"horizontal"' | '"vertical"' | '"float"'
+--- @field direction  '"horizontal"' | '"vertical"' | '"float"' | '"current-window"'
 --- @field shading_factor number
 --- @field shading_ratio number
 --- @field shell string|fun():string

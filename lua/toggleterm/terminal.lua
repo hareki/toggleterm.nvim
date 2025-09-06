@@ -92,6 +92,7 @@ local terminals = {}
 --- @field display_name string?
 --- @field env table<string, string> environmental variables passed to jobstart()
 --- @field clear_env boolean use clean job environment, passed to jobstart()
+--- @field original_bufnr number? the original buffer number for current-window direction
 --- @field on_stdout fun(t: Terminal, job: number, data: string[]?, name: string?)?
 --- @field on_stderr fun(t: Terminal, job: number, data: string[], name: string)?
 --- @field on_exit fun(t: Terminal, job: number, exit_code: number?, name: string?)?
@@ -241,6 +242,8 @@ function Terminal:is_split()
 end
 
 function Terminal:is_tab() return self.direction == "tab" and not ui.is_float(self.window) end
+
+function Terminal:is_current_window() return self.direction == "current-window" end
 
 function Terminal:resize(size)
   if self:is_split() then ui.resize_split(self, size) end
@@ -462,6 +465,8 @@ local function opener(size, term)
     ui.open_tab(term)
   elseif direction == "float" then
     ui.open_float(term)
+  elseif direction == "current-window" then
+    ui.open_current_window(term)
   else
     error("Invalid terminal direction")
   end

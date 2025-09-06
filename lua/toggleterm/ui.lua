@@ -343,6 +343,14 @@ function M.open_tab(term)
   create_term_buf_if_needed(term)
 end
 
+--- @param term Terminal
+function M.open_current_window(term)
+  -- Store the original buffer so we can restore it when closing
+  if not term.original_bufnr then term.original_bufnr = api.nvim_get_current_buf() end
+  -- Replace the current buffer with the terminal buffer in the current window
+  create_term_buf_if_needed(term)
+end
+
 ---@param term Terminal
 local function close_tab(term)
   if #vim.api.nvim_list_tabpages() == 1 then
@@ -389,6 +397,18 @@ function M.update_float(term)
   vim.api.nvim_win_set_config(term.window, M._get_float_config(term, false))
 end
 
+---@param term Terminal
+local function close_current_window(term)
+  -- Restore the original buffer instead of closing the window
+  if term.original_bufnr and api.nvim_buf_is_valid(term.original_bufnr) then
+    api.nvim_win_set_buf(term.window, term.original_bufnr)
+  else
+    -- Fallback: create a new empty buffer if original buffer is no longer valid
+    local new_buf = api.nvim_create_buf(true, false)
+    api.nvim_win_set_buf(term.window, new_buf)
+  end
+end
+
 ---Close given terminal's ui
 ---@param term Terminal
 function M.close(term)
@@ -396,6 +416,8 @@ function M.close(term)
     close_split(term)
   elseif term:is_tab() then
     close_tab(term)
+  elseif term:is_current_window() then
+    close_current_window(term)
   elseif term.window and api.nvim_win_is_valid(term.window) then
     api.nvim_win_close(term.window, true)
   end
